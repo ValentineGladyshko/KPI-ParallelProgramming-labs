@@ -2,12 +2,16 @@
 using System.Threading;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Lab1
 {
     class Program
     {
         private static readonly string path = "result.txt";
+
+        // class for parallel execution
+
         internal sealed class ThreadMinMax
         {
             private readonly Thread thread;
@@ -55,11 +59,13 @@ namespace Lab1
 
         static void Main(string[] args)
         {
+            int[] threads = { 2, 3, 4, 8, 16 }; // count of threads
+
             using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
             {
-                sw.Write("");
+                sw.Write(string.Empty);
             }
-            int[] threads = { 2, 3, 4, 8, 16 };
+            
             ExecuteTask(10000, threads);
             ExecuteTask(100000, threads);
             ExecuteTask(1000000, threads);
@@ -71,6 +77,8 @@ namespace Lab1
 
         static void ExecuteTask(int size, int[] threads)
         {
+            // Initialazing vector
+
             double[] vector = new double[size];
             Random random = new Random();
 
@@ -79,12 +87,14 @@ namespace Lab1
                 vector[i] = random.NextDouble() * 1000000;
             }
 
+            string output = new StringBuilder()
+                .AppendFormat("Execute on vector size {0}:\n", size).ToString();
             using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
             {
-                sw.WriteLine("Execute on vector size {0}:\n", size);
+                sw.WriteLine(output);
+                Console.WriteLine(output);
             }
 
-            Console.WriteLine("Execute on vector size {0}:\n", size);
             // Serial execution of Task
 
             Stopwatch serialStopwatch = new Stopwatch();
@@ -104,14 +114,14 @@ namespace Lab1
             //Console.WriteLine("\tSerial execution:\n\t\tTime: {0}ms; Min Value: {1}; Max Value: {2};",
             //    serialStopwatch.ElapsedMilliseconds, serialMinResult, serialMaxResult);
 
+            output = new StringBuilder()
+                .AppendFormat("\tSerial execution:\n\t\ttime: {0}ms;",
+                    serialStopwatch.ElapsedMilliseconds).ToString();
             using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
             {
-                sw.WriteLine("\tSerial execution:\n\t\ttime: {0}ms;",
-                    serialStopwatch.ElapsedMilliseconds);
+                sw.WriteLine(output);
+                Console.WriteLine(output);
             }
-
-            Console.WriteLine("\tSerial execution:\n\t\ttime: {0}ms;",
-                serialStopwatch.ElapsedMilliseconds);
 
             // Parallel execution of Task
 
@@ -161,22 +171,21 @@ namespace Lab1
                 double acceleration = (double)serialStopwatch.ElapsedMilliseconds / parallelStopwatch.ElapsedMilliseconds;
                 double efficiency = acceleration / threadsCount;
 
+                output = new StringBuilder()
+                .AppendFormat("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
+                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2")).ToString();
                 using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
                 {
-                    sw.WriteLine("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
-                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2"));
-                }
-
-                Console.WriteLine("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
-                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2"));
+                    sw.WriteLine(output);
+                    Console.WriteLine(output);
+                }                
             }
 
             using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
             {
                 sw.WriteLine();
+                Console.WriteLine();
             }
-
-            Console.WriteLine();
         }
     }
 }
