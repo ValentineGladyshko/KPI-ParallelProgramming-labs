@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
+using System.IO;
 
 namespace Lab1
 {
     class Program
     {
-        private static int size = 50000000;
-        private static int threadsCount = 4;
-
+        private static readonly string path = "result.txt";
         internal sealed class ThreadMinMax
         {
             private readonly Thread thread;
@@ -56,6 +55,22 @@ namespace Lab1
 
         static void Main(string[] args)
         {
+            using (StreamWriter sw = new StreamWriter(path, false, System.Text.Encoding.Default))
+            {
+                sw.Write("");
+            }
+            int[] threads = { 2, 3, 4, 8, 16 };
+            ExecuteTask(10000, threads);
+            ExecuteTask(100000, threads);
+            ExecuteTask(1000000, threads);
+            ExecuteTask(10000000, threads);
+            ExecuteTask(100000000, threads);
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+
+        static void ExecuteTask(int size, int[] threads)
+        {
             double[] vector = new double[size];
             Random random = new Random();
 
@@ -63,7 +78,13 @@ namespace Lab1
             {
                 vector[i] = random.NextDouble() * 1000000;
             }
-            Console.WriteLine("Executing...\n");
+
+            using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
+            {
+                sw.WriteLine("Execute on vector size {0}:\n", size);
+            }
+
+            Console.WriteLine("Execute on vector size {0}:\n", size);
             // Serial execution of Task
 
             Stopwatch serialStopwatch = new Stopwatch();
@@ -80,51 +101,82 @@ namespace Lab1
                     serialMaxResult = vector[i];
             }
             serialStopwatch.Stop();
-            Console.WriteLine("Serial execution:\nTime: {0}ms; Min Value: {1}; Max Value: {2}\n",
-                serialStopwatch.ElapsedMilliseconds, serialMinResult, serialMaxResult);
+            //Console.WriteLine("\tSerial execution:\n\t\tTime: {0}ms; Min Value: {1}; Max Value: {2};",
+            //    serialStopwatch.ElapsedMilliseconds, serialMinResult, serialMaxResult);
+
+            using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
+            {
+                sw.WriteLine("\tSerial execution:\n\t\ttime: {0}ms;",
+                    serialStopwatch.ElapsedMilliseconds);
+            }
+
+            Console.WriteLine("\tSerial execution:\n\t\ttime: {0}ms;",
+                serialStopwatch.ElapsedMilliseconds);
 
             // Parallel execution of Task
 
-            Stopwatch parallelStopwatch = new Stopwatch();
-            parallelStopwatch.Start();
-
-            double parallelMinResult = vector[0];
-            double parallelMaxResult = vector[0];
-            ThreadMinMax[] threadArray = new ThreadMinMax[threadsCount];
-            
-            for (int i = 0; i < threadsCount; i++)
+            for (int j = 0; j < threads.Length; j++)
             {
-                threadArray[i] = new ThreadMinMax(vector, size / threadsCount * i, 
-                    i == threadsCount - 1 ? size : size / threadsCount * (i + 1));
-                threadArray[i].Start();
+                int threadsCount = threads[j];
+
+                Stopwatch parallelStopwatch = new Stopwatch();
+                parallelStopwatch.Start();
+
+                double parallelMinResult = vector[0];
+                double parallelMaxResult = vector[0];
+                ThreadMinMax[] threadArray = new ThreadMinMax[threadsCount];
+
+                for (int i = 0; i < threadsCount; i++)
+                {
+                    threadArray[i] = new ThreadMinMax(vector, size / threadsCount * i,
+                        i == threadsCount - 1 ? size : size / threadsCount * (i + 1));
+                    threadArray[i].Start();
+                }
+
+                for (int i = 0; i < threadsCount; i++)
+                {
+                    threadArray[i].Join();
+                }
+
+                for (int i = 0; i < threadsCount; i++)
+                {
+                    if (threadArray[i].MinResult < parallelMinResult)
+                        parallelMinResult = threadArray[i].MinResult;
+                    if (threadArray[i].MaxResult > parallelMaxResult)
+                        parallelMaxResult = threadArray[i].MaxResult;
+                }
+
+                parallelStopwatch.Stop();
+
+                //Showing results for each step
+
+                //for (int i = 0; i < threadsCount; i++)
+                //{
+                //    Console.WriteLine("Thread #{0}:\nMin Value: {1}; Max Value:{2}", i, threadArray[i].MinResult, threadArray[i].MaxResult);
+                //}
+
+                //Console.WriteLine("\tParallel execution on {0} threads:\n\t\tTime: {1}ms; Min Value: {2}; Max Value: {3};",
+                //threadsCount, parallelStopwatch.ElapsedMilliseconds, parallelMinResult, parallelMaxResult);
+
+                double acceleration = (double)serialStopwatch.ElapsedMilliseconds / parallelStopwatch.ElapsedMilliseconds;
+                double efficiency = acceleration / threadsCount;
+
+                using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
+                {
+                    sw.WriteLine("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
+                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2"));
+                }
+
+                Console.WriteLine("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
+                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2"));
             }
 
-            for (int i = 0; i < threadsCount; i++)
+            using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
             {
-                threadArray[i].Join();
-            }
-            
-            for (int i = 0; i < threadsCount; i++)
-            {
-                if (threadArray[i].MinResult < parallelMinResult)
-                    parallelMinResult = threadArray[i].MinResult;
-                if (threadArray[i].MaxResult > parallelMaxResult)
-                    parallelMaxResult = threadArray[i].MaxResult;
+                sw.WriteLine();
             }
 
-            parallelStopwatch.Stop();
-
-            //Showing results for each step
-            
-            //for (int i = 0; i < threadsCount; i++)
-            //{
-            //    Console.WriteLine("Thread #{0}:\nMin Value: {1}; Max Value:{2}", i, threadArray[i].MinResult, threadArray[i].MaxResult);
-            //}
-
-            Console.WriteLine("Parallel execution:\nTime: {0}ms; Min Value: {1}; Max Value: {2}\n",
-            parallelStopwatch.ElapsedMilliseconds, parallelMinResult, parallelMaxResult);
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            Console.WriteLine();
         }
     }
 }
