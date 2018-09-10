@@ -43,6 +43,7 @@ namespace Lab1
                         minResult = vector[i];
                     if (vector[i] > maxResult)
                         maxResult = vector[i];
+         
                 }
             }
 
@@ -111,12 +112,16 @@ namespace Lab1
                     serialMaxResult = vector[i];
             }
             serialStopwatch.Stop();
-            //Console.WriteLine("\tSerial execution:\n\t\tTime: {0}ms; Min Value: {1}; Max Value: {2};",
-            //    serialStopwatch.ElapsedMilliseconds, serialMinResult, serialMaxResult);
+
+            //output = new StringBuilder()
+            //    .AppendFormat("\tSerial execution:\n\t\ttime: {0} ms;\n\t\tmin value: {1};" +
+            //    " max value: {2};", serialStopwatch.Elapsed.Ticks / 10000.0,
+            //    serialMinResult.ToString("F5"), serialMaxResult.ToString("F5")).ToString();
 
             output = new StringBuilder()
-                .AppendFormat("\tSerial execution:\n\t\ttime: {0}ms;",
-                    serialStopwatch.ElapsedMilliseconds).ToString();
+                .AppendFormat("\tSerial execution:\n\t\ttime: {0} ms;",
+                serialStopwatch.Elapsed.Ticks / 10000.0).ToString();
+
             using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
             {
                 sw.WriteLine(output);
@@ -162,18 +167,25 @@ namespace Lab1
 
                 //for (int i = 0; i < threadsCount; i++)
                 //{
-                //    Console.WriteLine("Thread #{0}:\nMin Value: {1}; Max Value:{2}", i, threadArray[i].MinResult, threadArray[i].MaxResult);
+                //    Console.WriteLine("Thread #{0}:\nmin value: {1}; max value:{2}", i, threadArray[i].MinResult, threadArray[i].MaxResult);
                 //}
 
-                //Console.WriteLine("\tParallel execution on {0} threads:\n\t\tTime: {1}ms; Min Value: {2}; Max Value: {3};",
-                //threadsCount, parallelStopwatch.ElapsedMilliseconds, parallelMinResult, parallelMaxResult);
-
-                double acceleration = (double)serialStopwatch.ElapsedMilliseconds / parallelStopwatch.ElapsedMilliseconds;
+                double acceleration = (double) serialStopwatch.Elapsed.Ticks / parallelStopwatch.Elapsed.Ticks;
                 double efficiency = acceleration / threadsCount;
 
+                //output = new StringBuilder()
+                //.AppendFormat("\tParallel execution on {0} threads:\n\t\ttime: {1} ms;" +
+                //" acceleration: {2}; efficiency: {3};\n\t\tmin value: {4}; max value: {5};",
+                //    threadsCount, parallelStopwatch.Elapsed.Ticks / 10000.0, acceleration.ToString("F2"),
+                //    efficiency.ToString("F2"), parallelMinResult.ToString("F5"),
+                //    parallelMaxResult.ToString("F5")).ToString();
+
                 output = new StringBuilder()
-                .AppendFormat("\tParallel execution on {0} threads:\n\t\ttime: {1}ms; acceleration: {2}; efficiency: {3};",
-                    threadsCount, parallelStopwatch.ElapsedMilliseconds, acceleration.ToString("F2"), efficiency.ToString("F2")).ToString();
+                .AppendFormat("\tParallel execution on {0} threads:\n\t\ttime: {1} ms;" +
+                " acceleration: {2}; efficiency: {3};",
+                    threadsCount, parallelStopwatch.Elapsed.Ticks / 10000.0,
+                    acceleration.ToString("F2"), efficiency.ToString("F2")).ToString();
+
                 using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
                 {
                     sw.WriteLine(output);
