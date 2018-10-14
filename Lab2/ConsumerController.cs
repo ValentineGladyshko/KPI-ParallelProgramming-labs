@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Lab2
 {
-    class ConsumerController
+    internal sealed class ConsumerController
     {
         private readonly Thread thread;
         private List<Consumer> consumers;

@@ -3,8 +3,6 @@ using System.Threading;
 
 namespace Lab2
 {
-
-
     internal sealed class Producer
     {
         private readonly Thread thread;
@@ -39,8 +37,7 @@ namespace Lab2
                     {
                         return;
                     }
-                }
-               
+                }           
             }
         }
 
