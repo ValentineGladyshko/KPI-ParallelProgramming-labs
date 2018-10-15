@@ -11,9 +11,9 @@ namespace Lab4
         static void Main(string[] args)
         {
 
-            ProduserConsumer();
+            //ProduserConsumer();
             //ReadersWriters();
-            //DiningPhilosophers();
+            DiningPhilosophers();
             //SleepingBarber();
 
 

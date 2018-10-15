@@ -29,37 +29,32 @@ namespace Lab4
                 Console.WriteLine(name + " want to eat");
                 while (true)
                 {
-                    lock (firstFork)
-                    {
-                        if (firstFork.Take())
-                            break;
-                    }
+
+                    if (firstFork.Take())
+                        break;
+
                     Thread.Yield();
                 }
                 Console.WriteLine(name + " took first fork " + firstFork);
 
                 while (true)
                 {
-                    lock (secondFork)
-                    {
-                        if (secondFork.Take())
-                            break;
-                    }
+
+                    if (secondFork.Take())
+                        break;
+
                     Thread.Yield();
                 }
                 Console.WriteLine(name + " took second fork " + secondFork);
                 Console.WriteLine(name + " is eating");
+                Thread.Sleep(50);
 
-                lock (secondFork)
-                {
-                    secondFork.Put();
-                }
+
                 Console.WriteLine(name + " put second fork " + secondFork);
-                lock (firstFork)
-                {
-                    firstFork.Put();
-                }
+                secondFork.Put();
+
                 Console.WriteLine(name + " put first fork " + firstFork);
+                firstFork.Put();
 
                 Thread.Sleep(100);
             }

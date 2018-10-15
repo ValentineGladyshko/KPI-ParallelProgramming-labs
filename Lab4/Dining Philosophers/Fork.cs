@@ -10,7 +10,7 @@ namespace Lab4
     {
         private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
         private string name;
-        private bool free;
+        private volatile bool free;
 
         public Fork(string name)
         {
@@ -32,9 +32,9 @@ namespace Lab4
         }
 
         public void Put()
-        {
-            locker.ExitWriteLock();
+        {          
             free = true;
+            locker.ExitWriteLock();
         }
 
         public override string ToString()
