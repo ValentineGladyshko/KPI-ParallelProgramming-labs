@@ -10,30 +10,19 @@ namespace Lab4
     {
         private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
         private string name;
-        private volatile bool free;
 
         public Fork(string name)
         {
             this.name = name;
-            free = true;
         }
 
-        public bool Take()
+        public void Take()
         {
-            bool status = false;
-            if (free)
-            {
-                locker.EnterWriteLock();
-                free = false;
-                status = true;
-            }
-
-            return status;
+            locker.EnterWriteLock();
         }
 
         public void Put()
         {          
-            free = true;
             locker.ExitWriteLock();
         }
 

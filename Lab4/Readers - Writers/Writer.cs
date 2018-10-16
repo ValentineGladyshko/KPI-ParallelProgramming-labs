@@ -27,7 +27,7 @@ namespace Lab4
             {
                 lock (storage)
                 {
-                    if (!storage.access)
+                    if (storage.readersCount != 0)
                     {
                         Console.WriteLine(name + " is waiting");
                         Monitor.Wait(storage);

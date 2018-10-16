@@ -11,10 +11,10 @@ namespace Lab4
         static void Main(string[] args)
         {
 
-            //ProduserConsumer();
-            //ReadersWriters();
+            ProduserConsumer();
+            ReadersWriters();
             DiningPhilosophers();
-            //SleepingBarber();
+            SleepingBarber();
 
 
             Console.WriteLine("Press any key to continue...");
@@ -46,7 +46,6 @@ namespace Lab4
             Random rand = new Random();
 
             Storage storage = new Storage();
-            MyInt readersCount = new MyInt();
 
             List<Writer> writers = new List<Writer>();
 
@@ -62,11 +61,11 @@ namespace Lab4
 
             for (int i = 0; i < 50; i++)
             {
-                new Reader(storage, "Reader" + (i + 1), readersCount).thread.Start();
+                new Reader(storage, "Reader" + (i + 1)).thread.Start();
 
                 Thread.Sleep(20);
             }
-
+            Thread.Sleep(1000);
             foreach (var writer in writers)
             {
                 writer.thread.Abort();

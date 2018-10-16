@@ -11,28 +11,19 @@ namespace Lab4
         public Thread thread;
         private Storage storage;
         public string name;
-        private MyInt readersCount;
 
-        public Reader(Storage storage, string name, MyInt readersCount)
+        public Reader(Storage storage, string name)
         {
             this.storage = storage;
             this.name = name;
-            this.readersCount = readersCount;
             thread = new Thread(Read);
         }
 
         public void Read()
         {
-            lock (readersCount)
+            lock (storage)
             {
-                readersCount.readersCount++;
-                if (readersCount.readersCount == 1)
-                {
-                    lock (storage)
-                    {
-                        storage.access = false;
-                    }
-                }
+                storage.readersCount++;
             }
 
             Console.WriteLine(name + " started reading");
@@ -42,16 +33,12 @@ namespace Lab4
                 Console.WriteLine(name + " readed data: " + storage.data);
             }
 
-            lock (readersCount)
+            lock (storage)
             {
-                readersCount.readersCount--;
-                if (readersCount.readersCount == 0)
+                storage.readersCount--;
+                if (storage.readersCount == 0)
                 {
-                    lock (storage)
-                    {
-                        storage.access = true;
-                        Monitor.Pulse(storage);
-                    }
+                    Monitor.Pulse(storage);
                 }
             }
         }

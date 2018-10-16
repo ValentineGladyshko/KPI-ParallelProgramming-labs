@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="Dining Philosophers\Fork.cs" />
     <Compile Include="Dining Philosophers\Philosopher.cs" />
-    <Compile Include="Readers - Writers\MyInt.cs" />
     <Compile Include="Sleeping Barber\Client.cs" />
     <Compile Include="Sleeping Barber\Barber.cs" />
     <Compile Include="Produser - Consumer\Consumer.cs" />

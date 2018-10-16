@@ -9,12 +9,12 @@ namespace Lab4
     internal sealed class Storage
     {
         public int data;
-        public bool access;
+        public int readersCount;
 
         public Storage()
         {
             data = 0;
-            access = true;
+            readersCount = 0;
         }
     }
 }

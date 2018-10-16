@@ -27,32 +27,17 @@ namespace Lab4
             for (int i = 0; i < 20; i++)
             {
                 Console.WriteLine(name + " want to eat");
-                while (true)
-                {
 
-                    if (firstFork.Take())
-                        break;
-
-                    Thread.Yield();
-                }
+                firstFork.Take();
                 Console.WriteLine(name + " took first fork " + firstFork);
-
-                while (true)
-                {
-
-                    if (secondFork.Take())
-                        break;
-
-                    Thread.Yield();
-                }
+                secondFork.Take();
                 Console.WriteLine(name + " took second fork " + secondFork);
+
                 Console.WriteLine(name + " is eating");
                 Thread.Sleep(50);
 
-
                 Console.WriteLine(name + " put second fork " + secondFork);
                 secondFork.Put();
-
                 Console.WriteLine(name + " put first fork " + firstFork);
                 firstFork.Put();
 
