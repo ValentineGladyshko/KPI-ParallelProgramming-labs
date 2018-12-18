@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MobileTariffs>
+  <Tariff name="Vodafone Red S">
+    <Name>Vodafone Red S</Name>
+    <OperatorName>Vodafone</OperatorName>
+    <Payroll>120</Payroll>
+    <СallPrices>
+      <InnerCalls>0</InnerCalls>
+      <OuterCalls>0</OuterCalls>
+      <LandlineCalls>0</LandlineCalls>
+    </СallPrices>
+    <SMSPrice>2</SMSPrice>
+    <Parameters>
+      <CountFavoriteNumbers>1</CountFavoriteNumbers>
+      <TimeTariffing>Minute</TimeTariffing>
+      <ConnectionFee>100</ConnectionFee>
+    </Parameters>
+  </Tariff>
+  <Tariff name="Lifecell Lite">
+    <Name>Lifecell Lite</Name>
+    <OperatorName>Lifecell</OperatorName>
+    <Payroll>0</Payroll>
+    <СallPrices>
+      <InnerCalls>0</InnerCalls>
+      <OuterCalls>5</OuterCalls>
+      <LandlineCalls>5</LandlineCalls>
+    </СallPrices>
+    <SMSPrice>5</SMSPrice>
+    <Parameters>
+      <CountFavoriteNumbers>0</CountFavoriteNumbers>
+      <TimeTariffing>Minute</TimeTariffing>
+      <ConnectionFee>0</ConnectionFee>
+    </Parameters>
+  </Tariff>
+  <Tariff name="Vodafone Mobile">
+    <Name>Vodafone Mobile</Name>
+    <OperatorName>Vodafone</OperatorName>
+    <Payroll>10</Payroll>
+    <СallPrices>
+      <InnerCalls>0</InnerCalls>
+      <OuterCalls>1</OuterCalls>
+      <LandlineCalls>1</LandlineCalls>
+    </СallPrices>
+    <SMSPrice>1</SMSPrice>
+    <Parameters>
+      <CountFavoriteNumbers>1</CountFavoriteNumbers>
+      <TimeTariffing>12Seconds</TimeTariffing>
+      <ConnectionFee>100</ConnectionFee>
+    </Parameters>
+  </Tariff>
+</MobileTariffs>
